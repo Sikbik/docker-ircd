@@ -1,21 +1,19 @@
-FROM ubuntu
+FROM ubuntu:20.10
 
 MAINTAINER Jason Carver <ut96caarrs@snkmail.com>
 
-# RUN apt-get update && apt-get install apt-transport-https
-
-# RUN echo "deb https://archive.ubuntu.com/ubuntu precise main universe" >> /etc/apt/sources.list
-
 RUN apt-get update && \
-  apt-get install -y apt-transport-https busybox-syslogd ngircd
+  apt-get install -y apt-utils # install apt-utils first or apt will complain
+
+RUN apt-get install -y apt-transport-https busybox-syslogd=1:1.30.1-4ubuntu9 ngircd=26-2
 
 # expose IRC ports
 EXPOSE :443
 EXPOSE :6664
 EXPOSE :6667
 
-add start.sh /start.sh
-add ngircd.conf /etc/ngircd/ngircd.conf
-add ngircd.motd /etc/ngircd/ngircd.motd
+ADD start.sh /start.sh
+ADD ngircd.conf /etc/ngircd/ngircd.conf
+ADD ngircd.motd /etc/ngircd/ngircd.motd
 
-CMD ["/start.sh"]
+ENTRYPOINT ["sh", "/start.sh"]
